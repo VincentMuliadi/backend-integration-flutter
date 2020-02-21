@@ -5,8 +5,8 @@ import 'package:localstorage/localstorage.dart';
 import 'dart:convert';
 import 'dart:async';
 
-// var baseUrl = 'https://flutter-backend-training.herokuapp.com';
-var baseUrl = 'http://10.0.2.2:3000';
+var baseUrl = 'https://flutter-backend-training.herokuapp.com';
+// var baseUrl = 'http://10.0.2.2:3000';
 var urlVersion = baseUrl;
 var urlLogin = '${baseUrl}/login';
 
@@ -49,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    fetchVersion();
 
     return Scaffold (
       body: Center(

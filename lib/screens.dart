@@ -5,6 +5,7 @@ import 'package:localstorage/localstorage.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'book.dart';
+import 'app_localization.dart';
 
 var baseUrl = 'https://flutter-backend-training.herokuapp.com';
 // var baseUrl = 'http://10.0.2.2:3000';
@@ -28,6 +29,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   final LocalStorage storage = new LocalStorage('myapp');
   final _formKey = GlobalKey<FormState>();
   var version = "";
@@ -46,8 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
     var res = await http.post(urlLogin,
         body: json.encode(formData),
         headers: {"Content-Type": "application/json"}).then((response) {
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
+      // print("Response status: ${response.statusCode}");
+      // print("Response body: ${response.body}");
       var content = json.decode(response.body);
       if (response.statusCode == 200) {
         if (content['success']) {
@@ -127,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         }
                       },
-                      child: Text("Login"),
+                      child: Text(AppLocalizations.of(context).login),
                     ),
                   )
                 ],

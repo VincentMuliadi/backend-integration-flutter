@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app_localization.dart';
 
 void main() => runApp(
     MyApp()
@@ -9,7 +11,30 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+      localizationsDelegates: [
+        // ... app-specific localization delegate[s] here
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en','US'), // English
+        const Locale('id','ID'), // Indonesian
+        // ... other locales the app supports
+      ],
+      localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
+        if(locale!=null) {
+          for (var supportedLocale in supportedLocales) {
+            if (locale.countryCode == supportedLocale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.elementAt(0);
+        }
+        return locale;
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.

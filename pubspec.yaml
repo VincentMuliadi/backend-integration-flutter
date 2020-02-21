@@ -19,6 +19,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_cupertino_localizations: ^1.0.1
+  intl:
+  intl_translation:
+
   json_annotation: 3.0.1
   http: 0.12.0+4
   localstorage: ^3.0.0

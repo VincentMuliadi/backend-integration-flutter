@@ -1,0 +1,18 @@
+{
+  "@@last_modified": "2020-02-22T00:13:13.451477",
+  "login": "login",
+  "@login": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "username": "username",
+  "@username": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "password": "password",
+  "@password": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

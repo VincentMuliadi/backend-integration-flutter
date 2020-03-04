@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-02-22T00:13:13.451477",
+  "@@last_modified": "2020-02-22T13:06:11.843037",
   "login": "login",
   "@login": {
     "type": "text",
@@ -12,6 +12,11 @@
   },
   "password": "password",
   "@password": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "version": "version",
+  "@version": {
     "type": "text",
     "placeholders": {}
   }

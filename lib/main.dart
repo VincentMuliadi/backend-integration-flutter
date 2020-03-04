@@ -22,19 +22,14 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         const Locale('en','US'), // English
         const Locale('id','ID'), // Indonesian
+        const Locale.fromSubtags(languageCode: 'zh'), // generic Chinese 'zh'
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), // generic simplified Chinese 'zh_Hans'
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), // generic traditional Chinese 'zh_Hant'
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'), // 'zh_Hans_CN'
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'), // 'zh_Hant_TW'
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'), // 'zh_Hant_HK'
         // ... other locales the app supports
       ],
-      localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
-        if(locale!=null) {
-          for (var supportedLocale in supportedLocales) {
-            if (locale.countryCode == supportedLocale.countryCode) {
-              return supportedLocale;
-            }
-          }
-          return supportedLocales.elementAt(0);
-        }
-        return locale;
-      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -51,8 +46,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
-        '/list': (context) => ListScreen(),
+        ListScreen.routeName: (context) => ListScreen(),
         DetailScreen.routeName: (context) => DetailScreen(),
+        AddScreen.routeName: (context) => AddScreen(),
       },
     );
   }

@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "@@last_modified": "2020-02-22T00:13:13.451477",
   "login": "Login",
   "@login": {
@@ -14,5 +15,10 @@
   "@password": {
     "type": "text",
     "placeholders": {}
-  }
+  },
+  "version": "Version",
+    "@version": {
+      "type": "text",
+      "placeholders": {}
+    }
 }

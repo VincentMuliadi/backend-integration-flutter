@@ -14,6 +14,7 @@ class AppLocalizations {
     final String name = locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
+
     return initializeMessages(localeName).then((bool _) {
       return AppLocalizations(localeName);
     });
@@ -31,7 +32,7 @@ class AppLocalizations {
   // Step 3 copy intl_messages.arb and edit intl_id.arb
   // Step 4
   // Run this
-  // flutter pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/intl_messages.arb lib/l10n/intl_en.arb lib/l10n/intl_id.arb lib/app_localization.dart
+  // flutter pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/l10n/intl_messages.arb lib/l10n/intl_en.arb lib/l10n/intl_id.arb lib/l10n/intl_zh.arb lib/app_localization.dart
 
   String get login {
     return Intl.message('login', name: 'login', locale: localeName);
@@ -45,6 +46,10 @@ class AppLocalizations {
     return Intl.message('password', name: 'password', locale: localeName);
   }
 
+  String get version {
+    return Intl.message('version', name: 'version', locale: localeName);
+  }
+
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -52,7 +57,7 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en', 'id'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(locale);

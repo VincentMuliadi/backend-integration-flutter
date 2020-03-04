@@ -6,12 +6,15 @@ import 'dart:convert';
 import 'dart:async';
 import 'book.dart';
 import 'app_localization.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 var baseUrl = 'https://flutter-backend-training.herokuapp.com';
 // var baseUrl = 'http://10.0.2.2:3000';
 var urlVersion = baseUrl;
 var urlLogin = '${baseUrl}/login';
 var urlBooks = '${baseUrl}/books';
+
+const countryList = ["Indonesia", "United States", "United Kingdom"];
 
 final TextStyle titleStyle = TextStyle(
   fontWeight: FontWeight.bold,
@@ -29,7 +32,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final LocalStorage storage = new LocalStorage('myapp');
   final _formKey = GlobalKey<FormState>();
   var version = "";
@@ -80,7 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     'App Version ${version}',
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(hintText: 'Username'),
+                    decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).username),
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter username';
@@ -93,7 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextFormField(
                     obscureText: true,
-                    decoration: const InputDecoration(hintText: 'Password'),
+                    decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context).password),
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter password';
@@ -141,6 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class ListScreen extends StatefulWidget {
+  static const routeName = '/list';
+
   @override
   _ListScreenState createState() => _ListScreenState();
 }
@@ -162,8 +168,12 @@ class _ListScreenState extends State<ListScreen> {
       'accept': 'application/json',
       'Authorization': 'Bearer ${accessToken}'
     });
+
+    print(res.body);
+
     setState(() {
       Iterable l = json.decode(res.body);
+
       bookList = l.map((model) => Book.fromJson(model)).toList();
     });
   }
@@ -187,10 +197,21 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     setAccessToken();
     fetchBooks();
+  }
 
+  _gotoAdd() async {
+    await Navigator.pushNamed(context, AddScreen.routeName);
+    bookList.clear();
+    fetchBooks();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var builder = ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: bookList.length,
@@ -210,7 +231,7 @@ class _ListScreenState extends State<ListScreen> {
                       size: 24.0,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/detail",
+                      Navigator.pushNamed(context, DetailScreen.routeName,
                           arguments: bookList[index]);
                     },
                   ),
@@ -225,6 +246,13 @@ class _ListScreenState extends State<ListScreen> {
         title: Text("Book List"),
       ),
       body: builder,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _gotoAdd();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.deepPurple,
+      ),
     );
   }
 }
@@ -256,7 +284,7 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Book args = ModalRoute.of(context).settings.arguments;
-    print(args);
+    print(args.toJson());
 
     return Scaffold(
       appBar: AppBar(title: Text(args.title)),
@@ -273,6 +301,183 @@ class DetailScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddScreen extends StatefulWidget {
+  static const routeName = '/add';
+
+  @override
+  _AddScreenState createState() => _AddScreenState();
+}
+
+class _AddScreenState extends State<AddScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> formData = {
+    'title': null,
+    'author': null,
+    'country': 'Indonesia',
+    'language': 'Indonesian'
+  };
+
+  _textEntry(
+      String label, bool required, String requiredMessage, String formKey, [bool mustNumber = false]) {
+    var _entry = Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(label, style: titleStyle),
+          TextFormField(
+
+            decoration: InputDecoration(hintText: ""),
+            validator: (value) {
+              if (required && value.isEmpty) {
+                return requiredMessage;
+              }
+              if(mustNumber) {
+                final isDigitsOnly = int.tryParse(value);
+                return isDigitsOnly == null
+                    ? 'Input needs to be digits only'
+                    : null;
+              }
+              return null;
+            },
+            onSaved: (value) {
+              if(mustNumber) {
+                formData[formKey] = int.parse(value);
+              } else {
+                formData[formKey] = value;
+              }
+            },
+          ),
+        ],
+      ),
+    );
+
+    return _entry;
+  }
+
+  _languageEntry(String label, bool required, String formKey) {
+    var _entry = Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(label, style: titleStyle),
+          Padding(
+            padding: EdgeInsets.only(top: 5, bottom: 5),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: formData[formKey],
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 24,
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
+              ),
+              onChanged: (newValue) {
+                setState(() {
+                  formData[formKey] = newValue;
+                });
+              },
+              items: <String>['Indonesian', 'English']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return _entry;
+  }
+
+  _countryEntry(String label, bool required, String formKey) {
+    var _entry = Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(label, style: titleStyle),
+          Padding(
+            padding: EdgeInsets.only(top: 5, bottom: 5),
+            child: new CountryCodePicker(
+              onChanged: (CountryCode newValue) {
+                setState(() {
+                  formData[formKey] = newValue.name;
+                });
+              },
+              // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+              initialSelection: 'ID',
+              favorite: ['+62','ID'],
+              showFlag: true,
+              // optional. Shows only country name and flag
+              showCountryOnly: true,
+              // optional. Shows only country name and flag when popup is closed.
+              showOnlyCountryWhenClosed: true,
+              // optional. aligns the flag and the Text left
+              alignLeft: false,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return _entry;
+  }
+
+  _formBuilder() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(top: 40, left: 40, right: 40),
+        child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _textEntry("Title", true, "Please enter title", "title"),
+                _textEntry("Author", true, "Please enter author", "author"),
+                _languageEntry("Language", false, "language"),
+                _countryEntry("Country", true, "country"),
+                _textEntry(
+                    "Total Pages", true, "Please enter total pages", "pages", true),
+                _textEntry("Year Published", true,
+                    "Please enter year published", "year", true),
+              ],
+            )),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Book"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.send),
+            tooltip: 'Save',
+            onPressed: () {
+              // openPage(context);
+              if (_formKey.currentState.validate()) {
+                // Process save
+                _formKey.currentState.save();
+                print(formData);
+              }
+            },
+          ),
+        ],
+      ),
+      body: _formBuilder(),
     );
   }
 }

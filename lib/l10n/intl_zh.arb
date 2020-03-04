@@ -1,22 +1,22 @@
 {
-  "@@locale": "id",
+  "@@locale": "zh",
   "@@last_modified": "2020-02-22T00:13:13.451477",
-  "login": "Masuk",
+  "login": "登录",
   "@login": {
     "type": "text",
     "placeholders": {}
   },
-  "username": "Nama User",
+  "username": "用户名",
   "@username": {
     "type": "text",
     "placeholders": {}
   },
-  "password": "Kata Sandi",
+  "password": "密码",
   "@password": {
     "type": "text",
     "placeholders": {}
   },
-  "version": "Versi",
+  "version": "版",
     "@version": {
       "type": "text",
       "placeholders": {}
